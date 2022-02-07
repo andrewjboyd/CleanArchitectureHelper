@@ -10,61 +10,64 @@ $unitTests = "UnitTests"
 
 # Stop if projectName already exists
 
-mkdir $projectName
-cd $projectName
-mkdir $source
-mkdir $tests
+New-Item -Name $projectName -ItemType "directory"
+Set-Location $projectName
+New-Item -Name $source -ItemType "directory"
+New-Item -Name $tests -ItemType "directory"
 
-cd Source
-mkdir "$projectName.$domain"
-mkdir "$projectName.$application"
-mkdir "$projectName.$infrastructure"
-mkdir "$projectName.$api"
+Set-Location Source
+
+New-Item -Name "$projectName.$domain" -ItemType "directory"
+New-Item -Name "$projectName.$application" -ItemType "directory"
+New-Item -Name "$projectName.$infrastructure" -ItemType "directory"
+New-Item -Name "$projectName.$api" -ItemType "directory"
 
 Write-Output "Setting up Domain Layer"
 
-cd "$projectName.Domain"
+Set-Location "$projectName.Domain"
 dotnet new classlib
 Remove-Item Class1.cs
+New-Item -Name "Entities" -ItemType "directory"
 
 Write-Output "Setting up Application Layer"
 
-cd "..\$projectName.$application"
+Set-Location "..\$projectName.$application"
 dotnet new classlib
-Remove-Item Class1.cs
 dotnet add package "AutoMapper.Extensions.Microsoft.DependencyInjection"
 dotnet add package "FluentValidation"
 dotnet add package "FluentValidation.DependencyInjectionExtensions"
 dotnet add package "MediatR.Extensions.Microsoft.DependencyInjection"
 dotnet add reference "../$projectName.$domain/$projectName.$domain.csproj"
+Remove-Item Class1.cs
+New-Item -Name "Common\Interfaces" -ItemType "directory"
 
 Write-Output "Setting up Infrastructure Layer"
-cd "..\$projectName.$infrastructure"
+Set-Location "..\$projectName.$infrastructure"
 dotnet new classlib
-Remove-Item Class1.cs
 dotnet add reference "../$projectName.$application/$projectName.$application.csproj"
+Remove-Item Class1.cs
 
 Write-Output "Setting up the WebApi"
-cd "..\$projectName.$api"
+Set-Location "..\$projectName.$api"
 dotnet new webapi --no-openapi
-Get-ChildItem .\WeatherForecast*.cs -Recurse | Remove-Item
 dotnet add reference "../$projectName.$application/$projectName.$application.csproj"
 dotnet add reference "../$projectName.$infrastructure/$projectName.$infrastructure.csproj"
+Get-ChildItem .\WeatherForecast*.cs -Recurse | Remove-Item
 
 Write-Output "Setting up tests"
-cd ..\..\Tests
+Set-Location ..\..\Tests
 
-mkdir "$projectName.$domain.$unitTests"
-mkdir "$projectName.$application.$unitTests"
-cd "$projectName.$domain.$unitTests"
+New-Item -Name "$projectName.$domain.$unitTests" -ItemType "directory"
+New-Item -Name "$projectName.$application.$unitTests" -ItemType "directory"
+Set-Location "$projectName.$domain.$unitTests"
 dotnet new xunit
 dotnet add reference "../../$source/$projectName.$domain/$projectName.$domain.csproj"
 
-cd ..\"$projectName.$application.$unitTests"
+Set-Location ..\"$projectName.$application.$unitTests"
 dotnet new xunit
 dotnet add reference "../../$source/$projectName.$application/$projectName.$application.csproj"
 
-cd ..\..\
+Set-Location ..\..\
 
 Write-Output "Setting up Solution"
 dotnet new sln
