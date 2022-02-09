@@ -61,10 +61,14 @@ New-Item -Name "$projectName.$domain.$unitTests" -ItemType "directory"
 New-Item -Name "$projectName.$application.$unitTests" -ItemType "directory"
 Set-Location "$projectName.$domain.$unitTests"
 dotnet new xunit
+dotnet add package "Moq"
+dotnet add package "AutoFixture"
 dotnet add reference "../../$source/$projectName.$domain/$projectName.$domain.csproj"
 
 Set-Location ..\"$projectName.$application.$unitTests"
 dotnet new xunit
+dotnet add package "Moq"
+dotnet add package "AutoFixture"
 dotnet add reference "../../$source/$projectName.$application/$projectName.$application.csproj"
 
 Set-Location ..\..\
