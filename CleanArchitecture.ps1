@@ -63,12 +63,14 @@ Set-Location "$projectName.$domain.$unitTests"
 dotnet new xunit
 dotnet add package "Moq"
 dotnet add package "AutoFixture"
+dotnet add package "FluentAssertions"
 dotnet add reference "../../$source/$projectName.$domain/$projectName.$domain.csproj"
 
 Set-Location ..\"$projectName.$application.$unitTests"
 dotnet new xunit
 dotnet add package "Moq"
 dotnet add package "AutoFixture"
+dotnet add package "FluentAssertions"
 dotnet add reference "../../$source/$projectName.$application/$projectName.$application.csproj"
 
 Set-Location ..\..\
